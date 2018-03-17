@@ -1,12 +1,12 @@
 <?php
-namespace ColourStream\Bundle\CronBundle\Command;
-use ColourStream\Bundle\CronBundle\Entity\CronJob;
+namespace ColourStream\CronBundle\Command;
+use ColourStream\CronBundle\Entity\CronJob;
 
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Console\Command\Command;
 
-use ColourStream\Bundle\CronBundle\Annotation\CronJob as CronJobAnno;
+use ColourStream\CronBundle\Annotation\CronJob as CronJobAnno;
 
 use Symfony\Bundle\DoctrineBundle\Registry;
 
@@ -23,9 +23,9 @@ class CronScanCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName("cron:scan")
-             ->setDescription("Scans for any new or deleted cron jobs")
-             ->addOption('keep-deleted', 'k', InputOption::VALUE_NONE, 'If set, deleted cron jobs will not be removed')
-             ->addOption('default-disabled', 'd', InputOption::VALUE_NONE, 'If set, new jobs will be disabled by default');
+            ->setDescription("Scans for any new or deleted cron jobs")
+            ->addOption('keep-deleted', 'k', InputOption::VALUE_NONE, 'If set, deleted cron jobs will not be removed')
+            ->addOption('default-disabled', 'd', InputOption::VALUE_NONE, 'If set, new jobs will be disabled by default');
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -48,19 +48,16 @@ class CronScanCommand extends ContainerAwareCommand
             $reflClass = new \ReflectionClass($command);
             foreach($reader->getClassAnnotations($reflClass) as $anno)
             {
-                if($anno instanceof CronJobAnno)
-                {
+                if($anno instanceof CronJobAnno) {
                     $job = $command->getName();
-                    if(array_key_exists($job, $knownJobs))
-                    {
+                    if(array_key_exists($job, $knownJobs)) {
                         // Clear it from the known jobs so that we don't try to delete it
                         unset($knownJobs[$job]);
                         
                         // Update the job if necessary
                         $currentJob = $jobRepo->findOneByCommand($job);
                         $currentJob->setDescription($command->getDescription());
-                        if($currentJob->getInterval() != $anno->value)
-                        {
+                        if($currentJob->getInterval() != $anno->value) {
                             $newTime = new \DateTime();
                             $newTime = $newTime->add(new \DateInterval($anno->value));
                             
@@ -78,8 +75,7 @@ class CronScanCommand extends ContainerAwareCommand
         }
         
         // Clear any jobs that weren't found
-        if(!$keepDeleted)
-        {
+        if(!$keepDeleted) {
             foreach(array_keys($knownJobs) as $deletedJob)
             {
                 $output->writeln("Deleting job: $deletedJob");

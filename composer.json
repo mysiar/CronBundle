@@ -9,16 +9,21 @@
         {
             "name": "predakanga",
             "email": "predatory.kangaroo@gmail.com"
+        },
+        {
+            "name": "mysiar",
+            "email": "psynowiec@gmail.com"
         }
     ],
     "require": {
-        "php": ">=5.3.2",
-        "symfony/symfony": "2.1.*",
-        "doctrine/doctrine-bundle": "*"
+        "php": ">=7.2",
+        "symfony/framework-bundle": "^4.0",
+        "doctrine/doctrine-bundle": "^1.7"
     },
-    "minimum-stability": "dev",
     "autoload": {
-        "psr-0": { "ColourStream\\Bundle\\CronBundle": "" }
+        "psr-4": { "ColourStream\\CronBundle\\": "src/" }
     },
-    "target-dir": "ColourStream/Bundle/CronBundle"
+    "autoload-dev": {
+        "psr-4": { "ColourStream\\CronBundle\\Tests\\": "tests/" }
+    }
 }

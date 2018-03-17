@@ -1,5 +1,6 @@
 <?php
-namespace ColourStream\Bundle\CronBundle\Entity;
+namespace ColourStream\CronBundle\Repository;
+
 use Doctrine\ORM\EntityRepository;
 
 class CronJobRepository extends EntityRepository
@@ -7,8 +8,8 @@ class CronJobRepository extends EntityRepository
     public function getKnownJobs()
     {
         $data = $this->getEntityManager()
-                     ->createQuery("SELECT job.command FROM ColourStreamCronBundle:CronJob job")
-                     ->getScalarResult();
+            ->createQuery("SELECT job.command FROM ColourStreamCronBundle:CronJob job")
+            ->getScalarResult();
         $toRet = array();
         foreach($data as $datum)
         {
@@ -20,10 +21,12 @@ class CronJobRepository extends EntityRepository
     public function findDueTasks()
     {
         return $this->getEntityManager()
-                    ->createQuery("SELECT job FROM ColourStreamCronBundle:CronJob job
+            ->createQuery(
+                "SELECT job FROM ColourStreamCronBundle:CronJob job
                                               WHERE job.nextRun <= :curTime
-                                              AND job.enabled = 1")
-                    ->setParameter('curTime', new \DateTime())
-                    ->getResult();
+                                              AND job.enabled = 1"
+            )
+            ->setParameter('curTime', new \DateTime())
+            ->getResult();
     }
 }

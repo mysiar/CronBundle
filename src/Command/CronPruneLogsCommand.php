@@ -1,5 +1,5 @@
 <?php
-namespace ColourStream\Bundle\CronBundle\Command;
+namespace ColourStream\CronBundle\Command;
 
 use Fusion\Framework\CronBundle\Entity\CronJobResult;
 
@@ -16,8 +16,8 @@ class CronPruneLogsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName("cron:pruneLogs")
-             ->setDescription("Prunes the logs for each cron job, leaving only recent failures and the most recent success")
-             ->addArgument('job', InputArgument::OPTIONAL, 'Operate only on this job');
+            ->setDescription("Prunes the logs for each cron job, leaving only recent failures and the most recent success")
+            ->addArgument('job', InputArgument::OPTIONAL, 'Operate only on this job');
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -25,8 +25,7 @@ class CronPruneLogsCommand extends ContainerAwareCommand
         $em = $this->getContainer()->get("doctrine.orm.entity_manager");
         $job = $input->getArgument('job');
         
-        if($job)
-        {
+        if($job) {
             $output->writeln("Pruning logs for cron job $job");
         }
         else
@@ -34,11 +33,9 @@ class CronPruneLogsCommand extends ContainerAwareCommand
             $output->writeln("Pruning logs for all cron jobs");
         }
         
-        if($job)
-        {
+        if($job) {
             $jobObj = $em->getRepository('ColourStreamCronBundle:CronJob')->findOneByCommand($job);
-            if(!$jobObj)
-            {
+            if(!$jobObj) {
                 $output->writeln("Couldn't find a job by the name of " . $job);
                 return CronJobResult::FAILED;
             }

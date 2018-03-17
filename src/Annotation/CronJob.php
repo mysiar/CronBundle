@@ -1,5 +1,5 @@
 <?php
-namespace ColourStream\Bundle\CronBundle\Annotation;
+namespace ColourStream\CronBundle\Annotation;
 
 /**
  * @Annotation()

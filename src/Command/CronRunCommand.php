@@ -1,12 +1,12 @@
 <?php
-namespace ColourStream\Bundle\CronBundle\Command;
+namespace ColourStream\CronBundle\Command;
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Console\Input\ArgvInput;
 
-use ColourStream\Bundle\CronBundle\Entity\CronJobResult;
+use ColourStream\CronBundle\Entity\CronJobResult;
 
-use ColourStream\Bundle\CronBundle\Entity\CronJob;
+use ColourStream\CronBundle\Entity\CronJob;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,8 +21,8 @@ class CronRunCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName("cron:run")
-             ->setDescription("Runs any currently schedule cron jobs")
-             ->addArgument("job", InputArgument::OPTIONAL, "Run only this job (if enabled)");
+            ->setDescription("Runs any currently schedule cron jobs")
+            ->addArgument("job", InputArgument::OPTIONAL, "Run only this job (if enabled)");
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -32,13 +32,11 @@ class CronRunCommand extends ContainerAwareCommand
         $jobRepo = $em->getRepository('ColourStreamCronBundle:CronJob');
         
         $jobsToRun = array();
-        if($jobName = $input->getArgument('job'))
-        {
+        if($jobName = $input->getArgument('job')) {
             try
             {
                 $jobObj = $jobRepo->findOneByCommand($jobName);
-                if($jobObj->getEnabled())
-                {
+                if($jobObj->getEnabled()) {
                     $jobsToRun = array($jobObj);
                 }
             }
@@ -104,23 +102,19 @@ class CronRunCommand extends ContainerAwareCommand
         $jobEnd = microtime(true);
         
         // Clamp the result to accepted values
-        if($returnCode < CronJobResult::RESULT_MIN || $returnCode > CronJobResult::RESULT_MAX)
-        {
+        if($returnCode < CronJobResult::RESULT_MIN || $returnCode > CronJobResult::RESULT_MAX) {
             $returnCode = CronJobResult::FAILED;
         }
         
         // Output the result
         $statusStr = "unknown";
-        if($returnCode == CronJobResult::SKIPPED)
-        {
+        if($returnCode == CronJobResult::SKIPPED) {
             $statusStr = "skipped";
         }
-        elseif($returnCode == CronJobResult::SUCCEEDED)
-        {
+        elseif($returnCode == CronJobResult::SUCCEEDED) {
             $statusStr = "succeeded";
         }
-        elseif($returnCode == CronJobResult::FAILED)
-        {
+        elseif($returnCode == CronJobResult::FAILED) {
             $statusStr = "failed";
         }
         
